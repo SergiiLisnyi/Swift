@@ -236,7 +236,7 @@
                                                     <color key="titleColor" cocoaTouchSystemColor="lightTextColor"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="onButtonOperationTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wuS-rb-43q"/>
+                                                    <action selector="onButtonEqualTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lyz-yl-CZW"/>
                                                 </connections>
                                             </button>
                                         </subviews>
