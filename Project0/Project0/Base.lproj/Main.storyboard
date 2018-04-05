@@ -214,15 +214,18 @@
                                                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                 </state>
                                                                 <connections>
-                                                                    <action selector="onButtonDigitsTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XD5-hf-NtB"/>
+                                                                    <action selector="onButtonDigitsTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zhW-fC-C8W"/>
                                                                 </connections>
                                                             </button>
-                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sYT-r0-AJS">
+                                                            <button opaque="NO" tag="18" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sYT-r0-AJS">
                                                                 <rect key="frame" x="144" y="0.0" width="72" height="73"/>
                                                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="25"/>
                                                                 <state key="normal" title=".">
                                                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                 </state>
+                                                                <connections>
+                                                                    <action selector="point:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aDZ-H0-SbJ"/>
+                                                                </connections>
                                                             </button>
                                                         </subviews>
                                                     </stackView>

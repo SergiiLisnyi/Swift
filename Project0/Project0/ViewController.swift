@@ -24,6 +24,7 @@ final class ViewController: UIViewController {
     var operationDone = false
     var operation = 0
     
+    
     @IBOutlet weak var displayLabel: UILabel!
     
     override func viewDidLoad() {
@@ -42,12 +43,17 @@ final class ViewController: UIViewController {
     @IBAction func onButtonDigitsTapped(_ sender: UIButton) {
         if  operationDone == false {
             if operationDuring == true {
+                print("sec")
                 displayLabel.text = String(sender.tag)
-                numberOnDisplay = Double(testValueDisplay())
+                numberOnDisplay = Double(testValueDisplay())!
                 operationDuring = false
             } else {
-                let result = testValueDisplay() * 10 + sender.tag
-                numberOnDisplay = Double(result)
+                print("first")
+                var result = testValueDisplay() + String(sender.tag)
+                if (result.first == "0") && (result.contains(".") != true) {
+                    result.removeFirst()
+                }
+                numberOnDisplay = Double(result)!
                 displayLabel.text = String(result)
             }
         }
@@ -55,6 +61,17 @@ final class ViewController: UIViewController {
             operationDone = false
             onButtonDigitsTapped(sender)
         }
+    }
+    
+    @IBAction func point(_ sender: UIButton) {
+        let displayText = testValueDisplay()
+        if (displayText.contains(".")) { //}&& (operationDuring == false) {
+            return
+        }
+//        if (displayText.isEmpty) {
+//            displayText = "0"
+//        }
+        displayLabel.text = displayText + "."
     }
     
     @IBAction func onButtonEqualTapped(_ sender: UIButton) {
@@ -80,11 +97,12 @@ final class ViewController: UIViewController {
         operationDuring = true
     }
     
-    func testValueDisplay() -> Int {
-        if let displayText = displayLabel.text, let displayInt =  Int(displayText), displayInt < Int.max / 10 {
-            return displayInt
+    
+    func testValueDisplay() -> String {
+        if let displayText = displayLabel.text {
+            return displayText
         }
-        return 0
+        return ""
     }
 }
 
