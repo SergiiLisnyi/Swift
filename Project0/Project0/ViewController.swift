@@ -43,12 +43,18 @@ final class ViewController: UIViewController {
     @IBAction func onButtonDigitsTapped(_ sender: UIButton) {
         if  operationDone == false {
             if operationDuring == true {
-                print("sec")
+                
+                let result = testValueDisplay()
+                if (result.hasPrefix("0.") == true) && (result.count == 2){
+                    displayLabel.text = result + String(sender.tag)
+                    numberOnDisplay = Double(testValueDisplay())!
+                    operationDuring = false
+                    return
+                }
                 displayLabel.text = String(sender.tag)
                 numberOnDisplay = Double(testValueDisplay())!
                 operationDuring = false
             } else {
-                print("first")
                 var result = testValueDisplay() + String(sender.tag)
                 if (result.first == "0") && (result.contains(".") != true) {
                     result.removeFirst()
@@ -65,13 +71,15 @@ final class ViewController: UIViewController {
     
     @IBAction func point(_ sender: UIButton) {
         let displayText = testValueDisplay()
-        if (displayText.contains(".")) { //}&& (operationDuring == false) {
+        if operationDuring == true {
+            displayLabel.text = "0."
+        }
+         else if (displayText.contains(".")) {
             return
         }
-//        if (displayText.isEmpty) {
-//            displayText = "0"
-//        }
-        displayLabel.text = displayText + "."
+        else {
+            displayLabel.text = displayText + "."
+        }
     }
     
     @IBAction func onButtonEqualTapped(_ sender: UIButton) {
