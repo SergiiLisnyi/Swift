@@ -11,17 +11,32 @@ import UIKit
 final class ViewController: UIViewController {
     
     enum Operation: Int {
-        case Add = 12
-        case Subtract
-        case Multiple
-        case Divide
-        case Percent
+        case add = 12
+        case subtract = 13
+        case multiple = 14
+        case divide = 15
+        case percent = 16
+        case sin = 30
+        case cos = 31
+        case tan = 32
+        case ctan = 33
+        
     }
+    
+//    enum Trigonometric: Int {
+//        case sin = 30
+//        case cos
+//        case tan
+//        case ctan
+//    }
+    
+    
     
     var numberOnDisplay = 0.0
     var previosNumber = 0.0
     var operationDuring = false
     var operationDone = false
+    var operationTrigonometric = false
     var operation = 0
     
     @IBOutlet weak var displayLabel: UILabel!
@@ -83,11 +98,16 @@ final class ViewController: UIViewController {
     
     @IBAction func onButtonEqualTapped(_ sender: UIButton) {
         switch operation {
-            case Operation.Add.rawValue: displayLabel.text = resultString(previosNumber + numberOnDisplay)
-            case Operation.Subtract.rawValue: displayLabel.text = resultString(previosNumber - numberOnDisplay)
-            case Operation.Multiple.rawValue: displayLabel.text = resultString(previosNumber * numberOnDisplay)
-            case Operation.Divide.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay)
-            case Operation.Percent.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay * 100)
+            case Operation.add.rawValue: displayLabel.text = resultString(previosNumber + numberOnDisplay)
+            case Operation.subtract.rawValue: displayLabel.text = resultString(previosNumber - numberOnDisplay)
+            case Operation.multiple.rawValue: displayLabel.text = resultString(previosNumber * numberOnDisplay)
+            case Operation.divide.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay)
+            case Operation.percent.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay * 100)
+            case Operation.sin.rawValue: displayLabel.text = resultString(sin(numberOnDisplay * .pi / 180))
+            case Operation.cos.rawValue: displayLabel.text = resultString(cos(numberOnDisplay * .pi / 180))
+            case Operation.tan.rawValue: displayLabel.text = resultString(tan(numberOnDisplay * .pi / 180))
+            case Operation.ctan.rawValue: displayLabel.text = resultString((cos(numberOnDisplay * .pi / 180)) /
+                                                                            (sin(numberOnDisplay * .pi / 180)))
             default: break
         }
         operationDone = true
@@ -103,6 +123,34 @@ final class ViewController: UIViewController {
         operation = sender.tag
         operationDuring = true
     }
+    
+    
+    @IBAction func onButtonTrigonometricTaped(_ sender: UIButton) {
+        operationTrigonometric = true
+        
+            switch sender.tag {
+                case Operation.sin.rawValue: displayLabel.text = "sin("
+    
+                default: break
+        }
+        operation = sender.tag
+        operationDuring = true
+    }
+    
+    
+    @IBAction func onButtonExponentiationTapped(_ sender: UIButton) {
+        //if  operationDuring == false {
+            if sender.tag == 20 {
+                displayLabel.text = resultString(numberOnDisplay * numberOnDisplay)
+                //operationDone = true
+            } else if sender.tag == 21 {
+            displayLabel.text = resultString(numberOnDisplay * numberOnDisplay * numberOnDisplay)
+            //operationDone = true
+        }
+       // }
+    }
+    
+    
     
     func resultString(_ value : Double) -> String {
         return value.truncatingRemainder(dividingBy: 1.0) == 0 ? String(format: "%.0f", value) : String(value)
