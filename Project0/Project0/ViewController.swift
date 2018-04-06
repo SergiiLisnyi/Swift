@@ -24,7 +24,6 @@ final class ViewController: UIViewController {
     var operationDone = false
     var operation = 0
     
-    
     @IBOutlet weak var displayLabel: UILabel!
     
     override func viewDidLoad() {
@@ -69,7 +68,7 @@ final class ViewController: UIViewController {
         }
     }
     
-    @IBAction func point(_ sender: UIButton) {
+    @IBAction func dot(_ sender: UIButton) {
         let displayText = testValueDisplay()
         if operationDuring == true {
             displayLabel.text = "0."
@@ -84,11 +83,11 @@ final class ViewController: UIViewController {
     
     @IBAction func onButtonEqualTapped(_ sender: UIButton) {
         switch operation {
-            case Operation.Add.rawValue: displayLabel.text = String(previosNumber + numberOnDisplay)
-            case Operation.Subtract.rawValue: displayLabel.text = String(previosNumber - numberOnDisplay)
-            case Operation.Multiple.rawValue: displayLabel.text = String(previosNumber * numberOnDisplay)
-            case Operation.Divide.rawValue: displayLabel.text = String(previosNumber / numberOnDisplay)
-            case Operation.Percent.rawValue: displayLabel.text = String(previosNumber / numberOnDisplay * 100)
+            case Operation.Add.rawValue: displayLabel.text = resultString(previosNumber + numberOnDisplay)
+            case Operation.Subtract.rawValue: displayLabel.text = resultString(previosNumber - numberOnDisplay)
+            case Operation.Multiple.rawValue: displayLabel.text = resultString(previosNumber * numberOnDisplay)
+            case Operation.Divide.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay)
+            case Operation.Percent.rawValue: displayLabel.text = resultString(previosNumber / numberOnDisplay * 100)
             default: break
         }
         operationDone = true
@@ -105,6 +104,9 @@ final class ViewController: UIViewController {
         operationDuring = true
     }
     
+    func resultString(_ value : Double) -> String {
+        return value.truncatingRemainder(dividingBy: 1.0) == 0 ? String(format: "%.0f", value) : String(value)
+    }
     
     func testValueDisplay() -> String {
         if let displayText = displayLabel.text {
