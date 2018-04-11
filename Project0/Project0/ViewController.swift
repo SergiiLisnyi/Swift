@@ -26,10 +26,24 @@ final class ViewController: UIViewController {
         case ey
     }
     
-    enum errorMathOperation: Error {
+    enum ErrorMathOperation: Error {
         case divideByZero
         case noValueSomeTg
         case noValueSomeCtg
+        case errorMath
+        
+        var description: String {
+            switch self {
+            case .divideByZero:
+                return "Error: divede by zero"
+            case .noValueSomeTg:
+                return "Error: no value tg"
+            case .noValueSomeCtg:
+                return "Error: no value ctg"
+            case .errorMath:
+                return "Error"
+            }
+        }
     }
 
     final let valueE = 2.71828182846
@@ -73,7 +87,7 @@ final class ViewController: UIViewController {
         }
     }
     
-    func mathOperation(_ firstOperand: Double, _ secondOperand: Double, _ operation: Operation) throws -> Double! {
+    func mathOperation(_ firstOperand: Double, _ secondOperand: Double, _ operation: Operation) throws -> Double? {
         switch operation {
         case .add:
             return firstOperand + secondOperand
@@ -83,7 +97,7 @@ final class ViewController: UIViewController {
             return firstOperand * secondOperand
         case .divide:
             guard secondOperand != 0 else {
-                throw errorMathOperation.divideByZero
+                throw ErrorMathOperation.divideByZero
             }
             return firstOperand / secondOperand
         case .xy:
@@ -98,12 +112,12 @@ final class ViewController: UIViewController {
             return cos(firstOperand * .pi / 180)
         case .tan:
             guard (firstOperand + 90).truncatingRemainder(dividingBy: 180) != 0 else {
-                throw errorMathOperation.noValueSomeTg
+                throw ErrorMathOperation.noValueSomeTg
             }
             return tan(firstOperand * .pi / 180)
         case .ctan:
             guard firstOperand != 0, firstOperand.truncatingRemainder(dividingBy: 180) != 0 else {
-                throw errorMathOperation.noValueSomeCtg
+                throw ErrorMathOperation.noValueSomeCtg
             }
             return pow(tan(firstOperand * .pi / 180), -1)
         case .ey:
@@ -117,16 +131,15 @@ final class ViewController: UIViewController {
     
         if let operation = operation {
             do {
-                 valueOnDisplay = try mathOperation(previousValue, valueOnDisplay, operation)
-            } catch errorMathOperation.divideByZero {
-                displayLabel.text = "Error: divede by zero"
+                 valueOnDisplay = try mathOperation(previousValue, valueOnDisplay, operation) ?? 0
+            } catch ErrorMathOperation.divideByZero {
+                displayLabel.text = ErrorMathOperation.divideByZero.description
             } catch  {
-                displayLabel.text = "Error"
+                displayLabel.text = ErrorMathOperation.errorMath.description
             }
         }
-        
-        isOperationInProgress = false
         previousValue = valueOnDisplay
+        isOperationInProgress = false
         operation = nil
     }
     
@@ -135,7 +148,6 @@ final class ViewController: UIViewController {
         if  !isOperationInProgress {
             onButtonEqualTapped(sender)
         }
-        
         operation = Operation(rawValue: sender.tag)
         isOperationInProgress = true
     }
@@ -145,13 +157,13 @@ final class ViewController: UIViewController {
             return
         }
         do {
-        valueOnDisplay =  try mathOperation(valueOnDisplay, previousValue, operation)
-        } catch errorMathOperation.noValueSomeTg {
-            displayLabel.text = "Error: no value tg"
-        } catch errorMathOperation.noValueSomeCtg {
-            displayLabel.text = "Error: no value ctg"
+        valueOnDisplay =  try mathOperation(valueOnDisplay, previousValue, operation) ?? 0
+        } catch ErrorMathOperation.noValueSomeTg {
+            displayLabel.text = ErrorMathOperation.noValueSomeTg.description
+        } catch ErrorMathOperation.noValueSomeCtg {
+            displayLabel.text = ErrorMathOperation.noValueSomeCtg.description
         } catch  {
-            displayLabel.text = "Error"
+            displayLabel.text = ErrorMathOperation.errorMath.description
         }
     }
 }
