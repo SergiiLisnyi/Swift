@@ -25,10 +25,16 @@ final class ViewController: UIViewController {
         case ctan
         case ey
     }
+    
+    enum errorMathOperation: Error {
+        case divideByZero
+        case noValueSomeTg
+        case noValueSomeCtg
+    }
 
     final let valueE = 2.71828182846
     
-    var numberOnDisplay: Double {
+    var valueOnDisplay: Double {
         get {
             if let input = displayLabel.text , let result = Double(input){
             return result
@@ -40,19 +46,17 @@ final class ViewController: UIViewController {
         }
     }
     
-    var previosNumber = 0.0
-    var isOperationProgress = false
-    var isOperationDone = false
-    var operation: Int!
+    var previousValue = 0.0
+    var isOperationInProgress = false
+    var operation: Operation?
     
     @IBOutlet weak var displayLabel: UILabel!
 
     @IBAction func acButton(_ sender: Any) {
-        numberOnDisplay = 0
-        previosNumber = 0
+        valueOnDisplay = 0
+        previousValue = 0
         operation = nil
-        isOperationProgress = false
-        isOperationDone = false
+        isOperationInProgress = false
     }
     
     @IBAction func onButtonDigitsTapped(_ sender: UIButton) {
@@ -61,21 +65,15 @@ final class ViewController: UIViewController {
             return
         }
         
-        guard !isOperationDone else {
-            isOperationDone = false
-            onButtonDigitsTapped(sender)
-            return
-        }
-        
-        if isOperationProgress {
-            numberOnDisplay = number
-            isOperationProgress = false
+        if isOperationInProgress {
+            valueOnDisplay = number
+            isOperationInProgress = false
         } else {
-            numberOnDisplay = numberOnDisplay * 10 + number
+            valueOnDisplay = valueOnDisplay * 10 + number
         }
     }
     
-    func mathOperation(_ firstOperand: Double, _ secondOperand: Double, _ operation: Operation) -> Double! {
+    func mathOperation(_ firstOperand: Double, _ secondOperand: Double, _ operation: Operation) throws -> Double! {
         switch operation {
         case .add:
             return firstOperand + secondOperand
@@ -84,6 +82,9 @@ final class ViewController: UIViewController {
         case .multiple:
             return firstOperand * secondOperand
         case .divide:
+            guard secondOperand != 0 else {
+                throw errorMathOperation.divideByZero
+            }
             return firstOperand / secondOperand
         case .xy:
             return pow(firstOperand, secondOperand)
@@ -96,8 +97,14 @@ final class ViewController: UIViewController {
         case .cos:
             return cos(firstOperand * .pi / 180)
         case .tan:
+            guard (firstOperand + 90).truncatingRemainder(dividingBy: 180) != 0 else {
+                throw errorMathOperation.noValueSomeTg
+            }
             return tan(firstOperand * .pi / 180)
         case .ctan:
+            guard firstOperand != 0, firstOperand.truncatingRemainder(dividingBy: 180) != 0 else {
+                throw errorMathOperation.noValueSomeCtg
+            }
             return pow(tan(firstOperand * .pi / 180), -1)
         case .ey:
             return pow(valueE, firstOperand)
@@ -108,31 +115,45 @@ final class ViewController: UIViewController {
     
     @IBAction func onButtonEqualTapped(_ sender: UIButton) {
     
-        if operation != nil {
-            let operation = Operation(rawValue: self.operation)!
-            numberOnDisplay = mathOperation(previosNumber, numberOnDisplay, operation)
+        if let operation = operation {
+            do {
+                 valueOnDisplay = try mathOperation(previousValue, valueOnDisplay, operation)
+            } catch errorMathOperation.divideByZero {
+                displayLabel.text = "Error: divede by zero"
+            } catch  {
+                displayLabel.text = "Error"
+            }
         }
-        isOperationDone = true
-        isOperationProgress = false
-        previosNumber = numberOnDisplay
+        
+        isOperationInProgress = false
+        previousValue = valueOnDisplay
         operation = nil
     }
     
     @IBAction func onButtonOperationTapped(_ sender: UIButton) {
-        if  !isOperationProgress {
+        
+        if  !isOperationInProgress {
             onButtonEqualTapped(sender)
         }
-        operation = sender.tag
-        isOperationProgress = true
+        
+        operation = Operation(rawValue: sender.tag)
+        isOperationInProgress = true
     }
     
-    @IBAction func onButtonUnaryTapped(_ sender: UIButton) {
+    @IBAction func onUnaryButtonTapped(_ sender: UIButton) {
         guard let operation = Operation(rawValue: sender.tag) else {
             return
         }
-        numberOnDisplay = mathOperation(numberOnDisplay, previosNumber, operation)
+        do {
+        valueOnDisplay =  try mathOperation(valueOnDisplay, previousValue, operation)
+        } catch errorMathOperation.noValueSomeTg {
+            displayLabel.text = "Error: no value tg"
+        } catch errorMathOperation.noValueSomeCtg {
+            displayLabel.text = "Error: no value ctg"
+        } catch  {
+            displayLabel.text = "Error"
+        }
     }
-    
 }
     
 
